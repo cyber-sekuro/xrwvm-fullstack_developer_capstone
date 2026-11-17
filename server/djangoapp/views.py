@@ -2,6 +2,7 @@
 
 from .models import CarMake, CarModel
 from .populate import initiate
+from .restapis import get_request, analyze_review_sentiments, post_review
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
@@ -75,22 +76,91 @@ def registration(request):
         "status": "Authenticated"
     })
 
-# # Update the `get_dealerships` view to render the index page with
-# a list of dealerships
-# def get_dealerships(request):
-# ...
+# Retrieve all dealerships or filter by state
+def get_dealerships(request, state="All"):
+    if state == "All":
+        endpoint = "/fetchDealers"
+    else:
+        endpoint = "/fetchDealers/" + state
 
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
-# def get_dealer_reviews(request,dealer_id):
-# ...
+    dealerships = get_request(endpoint)
 
-# Create a `get_dealer_details` view to render the dealer details
-# def get_dealer_details(request, dealer_id):
-# ...
+    return JsonResponse({
+        "status": 200,
+        "dealers": dealerships
+    })
 
-# Create a `add_review` view to submit a review
-# def add_review(request):
-# ...
+
+# Retrieve dealership details by ID
+def get_dealer_details(request, dealer_id):
+    endpoint = "/fetchDealer/" + str(dealer_id)
+    dealership = get_request(endpoint)
+
+    return JsonResponse({
+        "status": 200,
+        "dealer": dealership
+    })
+
+
+# Retrieve dealership reviews and analyze sentiments
+def get_dealer_reviews(request, dealer_id):
+    endpoint = "/fetchReviews/dealer/" + str(dealer_id)
+    reviews = get_request(endpoint)
+
+    if reviews is None:
+        return JsonResponse({
+            "status": 502,
+            "message": "Unable to retrieve reviews"
+        }, status=502)
+
+    for review in reviews:
+        result = analyze_review_sentiments(review["review"])
+
+        review["sentiment"] = (
+            result.get("sentiment", "unknown")
+            if isinstance(result, dict)
+            else "unknown"
+        )
+
+    return JsonResponse({
+        "status": 200,
+        "reviews": reviews
+    })
+
+# Submit a dealership review
+@csrf_exempt
+def add_review(request):
+    if request.method != "POST":
+        return JsonResponse({
+            "status": 405,
+            "message": "Method not allowed"
+        }, status=405)
+
+    if request.user.is_anonymous:
+        return JsonResponse({
+            "status": 403,
+            "message": "Unauthorized"
+        }, status=403)
+
+    try:
+        data = json.loads(request.body)
+        response = post_review(data)
+
+        if response is None:
+            return JsonResponse({
+                "status": 502,
+                "message": "Error in posting review"
+            }, status=502)
+
+        return JsonResponse({"status": 200})
+
+    except Exception as err:
+        logger.error("Error posting review: %s", err)
+
+        return JsonResponse({
+            "status": 400,
+            "message": "Error in posting review"
+        }, status=400)
 
 def get_cars(request):
     count = CarMake.objects.filter().count()
