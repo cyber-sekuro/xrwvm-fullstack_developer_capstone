@@ -1,0 +1,13 @@
+.git
+**/.git
+**/node_modules
+**/__pycache__
+**/*.pyc
+**/.env
+**/.env.*
+**/*.sqlite3
+**/*.log
+**/djangoenv
+**/.venv
+database/
+djangoapp/microservices/

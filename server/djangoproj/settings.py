@@ -27,17 +27,13 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'muhamadfaris-8000.theianext-0-labs-prod-misc-tools-us-east-0.'
-    'proxy.cognitiveclass.ai',
-    'misc-tools-us-east-0.proxy.cognitiveclass.ai',
-]
+ALLOWED_HOSTS = os.getenv(
+    "DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1"
+).split(",")
 CSRF_TRUSTED_ORIGINS = [
-    'https://muhamadfaris-8000.theianext-0-labs-prod-misc-tools-us-east-0.'
-    'proxy.cognitiveclass.ai',
-    'misc-tools-us-east-0.proxy.cognitiveclass.ai',
+    origin for origin in os.getenv(
+        "DJANGO_CSRF_TRUSTED_ORIGINS", ""
+    ).split(",") if origin
 ]
 
 REST_FRAMEWORK = {
