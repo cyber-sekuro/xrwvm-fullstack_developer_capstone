@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =os.environ["DJANGO_SECRET_KEY"]
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,10 +30,14 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'muhamadfaris-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai',
+    'muhamadfaris-8000.theianext-0-labs-prod-misc-tools-us-east-0.'
+    'proxy.cognitiveclass.ai',
+    'misc-tools-us-east-0.proxy.cognitiveclass.ai',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'https://muhamadfaris-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai',
+    'https://muhamadfaris-8000.theianext-0-labs-prod-misc-tools-us-east-0.'
+    'proxy.cognitiveclass.ai',
+    'misc-tools-us-east-0.proxy.cognitiveclass.ai',
 ]
 
 REST_FRAMEWORK = {
@@ -98,8 +102,10 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
         'NAME':
@@ -148,4 +154,3 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build'),
     os.path.join(BASE_DIR, 'frontend/build/static'),
 ]
-

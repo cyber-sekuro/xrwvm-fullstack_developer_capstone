@@ -4,13 +4,8 @@ from .models import CarMake, CarModel
 from .populate import initiate
 from .restapis import get_request, analyze_review_sentiments, post_review
 
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
-from django.contrib import messages
-from datetime import datetime
 
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
@@ -42,12 +37,16 @@ def login_user(request):
     return JsonResponse(data)
 
 # Create a `logout_request` view to handle sign out request
+
+
 def logout_request(request):
     logout(request)
     data = {"userName": ""}
     return JsonResponse(data)
 
 # Create a `registration` view to handle sign up request
+
+
 @csrf_exempt
 def registration(request):
     data = json.loads(request.body)
@@ -77,6 +76,8 @@ def registration(request):
     })
 
 # Retrieve all dealerships or filter by state
+
+
 def get_dealerships(request, state="All"):
     if state == "All":
         endpoint = "/fetchDealers"
@@ -128,6 +129,8 @@ def get_dealer_reviews(request, dealer_id):
     })
 
 # Submit a dealership review
+
+
 @csrf_exempt
 def add_review(request):
     if request.method != "POST":
@@ -161,6 +164,7 @@ def add_review(request):
             "status": 400,
             "message": "Error in posting review"
         }, status=400)
+
 
 def get_cars(request):
     count = CarMake.objects.filter().count()
